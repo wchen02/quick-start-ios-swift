@@ -171,11 +171,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C83598FF1B4C8F010050B21F /* Build configuration list for PBXNativeTarget "QuickStart-Swift" */;
 			buildPhases = (
-				7A398ACC4174410EE91F38FA /* Check Pods Manifest.lock */,
+				7A398ACC4174410EE91F38FA /* [CP] Check Pods Manifest.lock */,
 				C83598DC1B4C8F010050B21F /* Sources */,
 				C83598DD1B4C8F010050B21F /* Frameworks */,
 				C83598DE1B4C8F010050B21F /* Resources */,
-				E1C4EE004B91F9E3AA44870A /* Copy Pods Resources */,
+				E1C4EE004B91F9E3AA44870A /* [CP] Copy Pods Resources */,
+				4425BC287EA4B99D794744FD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -264,14 +265,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		7A398ACC4174410EE91F38FA /* Check Pods Manifest.lock */ = {
+		4425BC287EA4B99D794744FD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QuickStart-Swift/Pods-QuickStart-Swift-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7A398ACC4174410EE91F38FA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -279,14 +295,14 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		E1C4EE004B91F9E3AA44870A /* Copy Pods Resources */ = {
+		E1C4EE004B91F9E3AA44870A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;

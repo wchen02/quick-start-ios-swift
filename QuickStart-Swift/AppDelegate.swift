@@ -3,25 +3,25 @@ import UIKit
 /**
  Layer App ID from developer.layer.com
  */
-let LQSLayerAppIDString = ""
+let LQSLayerAppIDString = "layer:///apps/staging/8ef0d846-3189-11e6-8ca8-2f691d0f52c4"
 
 #if arch(i386) || arch(x86_64) // Simulator
     
 // If on simulator set the user ID to Simulator and participant to Device
-let LQSCurrentUserID = "Simulator"
-let LQSParticipantUserID = "Device"
+let LQSCurrentUserID = "1"
+let LQSParticipantUserID = "19"
 let LQSInitialMessageText = "Hey Device! This is your friend, Simulator."
     
 #else // Device
 
 // If on device set the user ID to Device and participant to Simulator
-let LQSCurrentUserID = "Device"
-let LQSParticipantUserID = "Simulator"
+let LQSCurrentUserID = "19"
+let LQSParticipantUserID = "1"
 let LQSInitialMessageText = "Hey Simulator! This is your friend, Device."
     
 #endif
 
-let LQSParticipant2UserID = "Dashboard"
+let LQSParticipant2UserID = "75"
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
