@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             application.applicationSupportsShakeToEdit = true
             
             // Show a usage the first time the app is launched
-            showFirstTimeMessage()
+            //showFirstTimeMessage()
 
             // Initializes a LYRClient object
             let appID = NSURL(string: LQSLayerAppIDString)
@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             }
             
             // Register for push
-            registerApplicationForPushNotifications(application)
+            //registerApplicationForPushNotifications(application)
             
             let navigationController: UINavigationController = self.window!.rootViewController as! UINavigationController
             let viewController: LQSViewController = navigationController.topViewController as! LQSViewController
@@ -73,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
 
     // MARK - Push Notification Methods
 
-    func registerApplicationForPushNotifications(application: UIApplication) {
+    /*func registerApplicationForPushNotifications(application: UIApplication) {
         // Set up push notifications
         // For more information about Push, check out:
         // https://developer.layer.com/docs/guides/ios#push-notification
@@ -82,9 +82,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
         let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: [UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound], categories: nil)
         application.registerUserNotificationSettings(notificationSettings)
         application.registerForRemoteNotifications()
-    }
+    }*/
 
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    /*func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         // Send device token to Layer so Layer can send pushes to this device.
         // For more information about Push, check out:
         // https://developer.layer.com/docs/guides/ios#push-notification
@@ -102,9 +102,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
         } else {
             print("Failed updating device token with error: \(error)")
         }
-    }
+    }*/
 
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    /*func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         // Get Message from Metadata
 // Why never use?        var message: LYRMessage = messageFromRemoteNotification(userInfo)
         
@@ -131,9 +131,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
         } else {
             completionHandler(UIBackgroundFetchResult.NoData)
         }
-    }
+    }*/
 
-    func messageFromRemoteNotification(remoteNotification: NSDictionary?) -> LYRMessage {
+    /*func messageFromRemoteNotification(remoteNotification: NSDictionary?) -> LYRMessage {
         let LQSPushMessageIdentifierKeyPath = "layer.message_identifier"
         let LQSPushAnnouncementIdentifierKeyPath = "layer.announcement_identifier"
         
@@ -165,7 +165,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
         }
         
         return messages!.firstObject as! LYRMessage
-    }
+    }*/
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -314,7 +314,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
 
     // MARK - First Run Notification
 
-    func showFirstTimeMessage() {
+    /*func showFirstTimeMessage() {
         let LQSApplicationHasLaunchedOnceDefaultsKey = "applicationHasLaunchedOnce"
         
         let standardUserDefaults = NSUserDefaults.standardUserDefaults()
@@ -330,7 +330,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             alert.addButtonWithTitle("Got It!")
             alert.show()
         }
-    }
+    }*/
 
     // MARK - Check if Sample App is using a valid app ID.
 

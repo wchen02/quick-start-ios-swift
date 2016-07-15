@@ -65,7 +65,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
             presentViewController(alert, animated: true, completion: nil)
             return
         }
-        setupLayerNotificationObservers()
+        //setupLayerNotificationObservers()
         fetchLayerConversation()
         
         // Setup for Shake
@@ -88,7 +88,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
-    func setupLayerNotificationObservers() {
+    /*func setupLayerNotificationObservers() {
         // Register for Layer object change notifications
         // For more information about Synchronization, check out https://developer.layer.com/docs/integration/ios#synchronization
         NSNotificationCenter.defaultCenter().addObserver(self,
@@ -113,7 +113,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
                                                          selector: "didReceiveLayerClientDidFinishSynchronizationNotification:",
                                                          name: LYRClientDidFinishSynchronizationNotification,
                                                          object: self.layerClient)
-    }
+    }*/
 
     // MARK:- Fetching Layer Content
 
