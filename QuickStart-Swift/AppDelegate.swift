@@ -3,24 +3,25 @@ import UIKit
 /**
  Layer App ID from developer.layer.com
  */
-let LQSLayerAppIDString = "layer:///apps/staging/8ef0d846-3189-11e6-8ca8-2f691d0f52c4"
+let LQSLayerAppIDString = "LAYER_APP_ID"
 
 #if arch(i386) || arch(x86_64) // Simulator
     
 // If on simulator set the user ID to Simulator and participant to Device
-let LQSCurrentUserID = "1"
-let LQSParticipantUserID = "19"
+let LQSCurrentUserID = "Simulator"
+let LQSParticipantUserID = "Device"
 let LQSInitialMessageText = "Hey Device! This is your friend, Simulator."
     
 #else // Device
 
 // If on device set the user ID to Device and participant to Simulator
-let LQSCurrentUserID = "19"
-let LQSParticipantUserID = "1"
+let LQSCurrentUserID = "Device"
+let LQSParticipantUserID = "Simulator"
 let LQSInitialMessageText = "Hey Simulator! This is your friend, Device."
     
 #endif
 
+//let LQSParticipant2UserID = "Dashboard"
 let LQSParticipant2UserID = "75"
 let LQSCategoryIdentifier = "category_lqs";
 let LQSAcceptIdentifier = "ACCEPT_IDENTIFIER";
@@ -39,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             application.applicationSupportsShakeToEdit = true
             
             // Show a usage the first time the app is launched
-            //showFirstTimeMessage()
+            showFirstTimeMessage()
 
             // Initializes a LYRClient object
             let appID: NSURL = NSURL(string: LQSLayerAppIDString)!
@@ -65,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             }
             
             // Register for push
-            //registerApplicationForPushNotifications(application)
+            registerApplicationForPushNotifications(application)
             
             let navigationController: UINavigationController = self.window!.rootViewController as! UINavigationController
             let viewController: LQSViewController = navigationController.topViewController as! LQSViewController
@@ -76,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
 
     // MARK - Push Notification Methods
 
-    /*func registerApplicationForPushNotifications(application: UIApplication) {
+    func registerApplicationForPushNotifications(application: UIApplication) {
         // Set up push notifications
         // For more information about Push, check out:
         // https://developer.layer.com/docs/guides/ios#push-notification
@@ -85,9 +86,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
         let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: [UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound], categories: nil)
         application.registerUserNotificationSettings(notificationSettings)
         application.registerForRemoteNotifications()
-    }*/
+    }
 
-    /*func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         // Send device token to Layer so Layer can send pushes to this device.
         // For more information about Push, check out:
         // https://developer.layer.com/docs/guides/ios#push-notification
@@ -105,26 +106,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
         } else {
             print("Failed updating device token with error: \(error)")
         }
-    }*/
+    }
 
-    /*func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        // Get Message from Metadata
-// Why never use?        var message: LYRMessage = messageFromRemoteNotification(userInfo)
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         
-        let success = layerClient!.synchronizeWithRemoteNotification(userInfo, completion: { (changes, error) in
-            if (changes != nil) {
-                if (changes!.count > 0) {
-// Why never use?                    message = self.messageFromRemoteNotification(userInfo)
-                    completionHandler(UIBackgroundFetchResult.NewData)
-                } else {
-                    completionHandler(UIBackgroundFetchResult.NoData)
+        let success = layerClient!.synchronizeWithRemoteNotification(userInfo, completion: { (conversation, message, error) in
+            if (conversation != nil || message != nil) {
+                let messagePart = message!.parts[0];
+
+                if(messagePart.MIMEType == "text/plain") {
+                    print("Pushed Message Contents: %@", NSString.init(data: messagePart.data!, encoding: NSUTF8StringEncoding));
+                } else if (messagePart.MIMEType == "image/png"){
+                    print("Pushed Message Contents was an image");
                 }
+                completionHandler(UIBackgroundFetchResult.NewData);
             } else {
                 if error != nil {
                     print("Failed processing push notification with error: \(error)")
-                    completionHandler(UIBackgroundFetchResult.NoData)
-                } else {
                     completionHandler(UIBackgroundFetchResult.Failed)
+                } else {
+                    completionHandler(UIBackgroundFetchResult.NoData)
                 }
             }
         })
@@ -134,9 +135,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
         } else {
             completionHandler(UIBackgroundFetchResult.NoData)
         }
-    }*/
+    }
 
-    /*func messageFromRemoteNotification(remoteNotification: NSDictionary?) -> LYRMessage {
+    func messageFromRemoteNotification(remoteNotification: NSDictionary?) -> LYRMessage {
         let LQSPushMessageIdentifierKeyPath = "layer.message_identifier"
         let LQSPushAnnouncementIdentifierKeyPath = "layer.announcement_identifier"
         
@@ -161,14 +162,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
         if (error == nil) {
             print("Query contains \(messages!.count) messages")
             let message: LYRMessage = messages!.firstObject as! LYRMessage
-            let messagePart: LYRMessagePart = message.parts[0] as! LYRMessagePart
-            print("Pushed Message Contents: \(NSString(data: messagePart.data, encoding: NSUTF8StringEncoding))")
+            let messagePart: LYRMessagePart = message.parts[0] 
+            print("Pushed Message Contents: \(NSString(data: messagePart.data!, encoding: NSUTF8StringEncoding))")
         } else {
             print("Query failed with error \(error)")
         }
         
         return messages!.firstObject as! LYRMessage
-    }*/
+    }
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -317,7 +318,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
 
     // MARK - First Run Notification
 
-    /*func showFirstTimeMessage() {
+    func showFirstTimeMessage() {
         let LQSApplicationHasLaunchedOnceDefaultsKey = "applicationHasLaunchedOnce"
         
         let standardUserDefaults = NSUserDefaults.standardUserDefaults()
@@ -333,7 +334,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             alert.addButtonWithTitle("Got It!")
             alert.show()
         }
-    }*/
+    }
 
     // MARK - Check if Sample App is using a valid app ID.
 

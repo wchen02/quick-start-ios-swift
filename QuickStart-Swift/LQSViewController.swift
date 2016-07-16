@@ -65,7 +65,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
             presentViewController(alert, animated: true, completion: nil)
             return
         }
-        //setupLayerNotificationObservers()
+        setupLayerNotificationObservers()
         fetchLayerConversation()
         
         // Setup for Shake
@@ -88,32 +88,32 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
-    /*func setupLayerNotificationObservers() {
+    func setupLayerNotificationObservers() {
         // Register for Layer object change notifications
         // For more information about Synchronization, check out https://developer.layer.com/docs/integration/ios#synchronization
         NSNotificationCenter.defaultCenter().addObserver(self,
-                                                         selector: "didReceiveLayerObjectsDidChangeNotification:",
+                                                         selector: #selector(LQSViewController.didReceiveLayerObjectsDidChangeNotification(_:)),
                                                          name: LYRClientObjectsDidChangeNotification,
                                                          object: nil)
         
         // Register for typing indicator notifications
         // For more information about Typing Indicators, check out https://developer.layer.com/docs/integration/ios#typing-indicator
         NSNotificationCenter.defaultCenter().addObserver(self,
-                                                         selector: "didReceiveTypingIndicator:",
+                                                         selector: #selector(LQSViewController.didReceiveTypingIndicator(_:)),
                                                          name: LYRConversationDidReceiveTypingIndicatorNotification,
                                                          object: self.conversation)
         
         // Register for synchronization notifications
         NSNotificationCenter.defaultCenter().addObserver(self,
-                                                         selector: "didReceiveLayerClientWillBeginSynchronizationNotification:",
+                                                         selector: #selector(LQSViewController.didReceiveLayerClientWillBeginSynchronizationNotification(_:)),
                                                          name: LYRClientWillBeginSynchronizationNotification,
                                                          object: self.layerClient)
         
         NSNotificationCenter.defaultCenter().addObserver(self,
-                                                         selector: "didReceiveLayerClientDidFinishSynchronizationNotification:",
+                                                         selector: #selector(LQSViewController.didReceiveLayerClientDidFinishSynchronizationNotification(_:)),
                                                          name: LYRClientDidFinishSynchronizationNotification,
                                                          object: self.layerClient)
-    }*/
+    }
 
     // MARK:- Fetching Layer Content
 
@@ -307,10 +307,9 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
     func didReceiveTypingIndicator(notification: NSNotification) {
         // For more information about Typing Indicators, check out https://developer.layer.com/docs/integration/ios#typing-indicator
         
-        /*let dictionary: [String: AnyObject] = notification.userInfo as! [String: AnyObject]
-        let participantID = notification.userInfo![LYRTypingIndicatorObjectUserInfoKey];
-            //dictionary[LYRTypingIndicatorParticipantUserInfoKey] as! String
-        let typingIndicator: LYRTypingIndicatorAction = notification.userInfo![LYRTypingIndicatorObjectUserInfoKey]
+        let dictionary: [String: AnyObject] = notification.userInfo as! [String: AnyObject]
+        let participantID = dictionary[LYRTypingIndicatorObjectUserInfoKey];
+        let typingIndicator = dictionary[LYRTypingIndicatorObjectUserInfoKey] as! LYRTypingIndicatorAction
         
         
         if (typingIndicator == LYRTypingIndicatorAction.Begin) {
@@ -319,7 +318,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         } else {
             self.typingIndicatorLabel.alpha = 0
             self.typingIndicatorLabel.text = ""
-        }*/
+        }
     }
 
     // MARK: - IBActions
@@ -357,18 +356,15 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         }
         
         // Creates and returns a new message object with the given conversation and array of message parts
-        // @TODO ADD PUSH SUPPORT
-        /*let pushMessage = "\(layerClient?.authenticatedUser?.userID) says \(messageText)"
+        let pushMessage = "\(layerClient?.authenticatedUser?.userID) says \(messageText)"
         
         let defaultConfiguration: LYRPushNotificationConfiguration = LYRPushNotificationConfiguration();
         defaultConfiguration.alert = pushMessage;
         defaultConfiguration.category = LQSCategoryIdentifier;
         // The following dictionary will appear in push payload
         defaultConfiguration.data = [ "test_key": "test_value"];
-        let pushOptions: LYRMessageOptions = LYRMessageOptions()
-        pushOptions.pushNotificationConfiguration(defaultConfiguration)*/
-        //let pushOptions: Dictionary = [LYRMessageOptionsPushNotificationConfigurationKey: defaultConfiguration]
-        let message: LYRMessage? = try? layerClient!.newMessageWithParts([messagePart!], options: nil)
+        let pushOptions = [LYRMessageOptionsPushNotificationConfigurationKey: defaultConfiguration] as? LYRMessageOptions
+        let message: LYRMessage? = try? layerClient!.newMessageWithParts([messagePart!], options: pushOptions)
         
         // Sends the specified message
         var error: NSError?
@@ -633,7 +629,6 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         dismissViewControllerAnimated(true, completion: nil)
         
         messageImage.image = image
-        // inputTextView.text = "Press Send to Send Selected Image!"
     }
 
 
