@@ -22,6 +22,9 @@ let LQSInitialMessageText = "Hey Simulator! This is your friend, Device."
 #endif
 
 let LQSParticipant2UserID = "75"
+let LQSCategoryIdentifier = "category_lqs";
+let LQSAcceptIdentifier = "ACCEPT_IDENTIFIER";
+let LQSIgnoreIdentifier = "IGNORE_IDENTIFIER";
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
@@ -39,10 +42,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             //showFirstTimeMessage()
 
             // Initializes a LYRClient object
-            let appID = NSURL(string: LQSLayerAppIDString)
+            let appID: NSURL = NSURL(string: LQSLayerAppIDString)!
             layerClient = LYRClient(appID: appID)
-            layerClient.delegate = self
-            layerClient.autodownloadMIMETypes = Set<NSObject>(arrayLiteral: "image/png")
+//            layerClient.delegate = self
+            layerClient.autodownloadMIMETypes = Set<String>(arrayLiteral: "image/png")
             
             // Connect to Layer
             // See "Quick Start - Connect" for more details
@@ -193,8 +196,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
 
     func authenticateLayerWithUserID(userID: String, completion: ((success: Bool, error: NSError?) -> Void)) {
         if let layerClient = layerClient {
-            if layerClient.authenticatedUserID != nil {
-                print("Layer Authenticated as User \(layerClient.authenticatedUserID)")
+            if layerClient.authenticatedUser != nil {
+                print("Layer Authenticated as User \(layerClient.authenticatedUser?.userID)")
                 completion(success: true, error: nil)
                 return
             }
@@ -206,8 +209,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             /*
              * 1. Request an authentication Nonce from Layer
              */
-            layerClient.requestAuthenticationNonceWithCompletion() { (nonce: String!, error: NSError!) in
-                if nonce.isEmpty {
+            layerClient.requestAuthenticationNonceWithCompletion() { (nonce: String?, error: NSError?) in
+                if nonce!.isEmpty {
                     completion(success: false, error: error)
                     return
                 }
@@ -215,7 +218,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
                 /*
                  * 2. Acquire identity Token from Layer Identity Service
                  */
-                self.requestIdentityTokenForUserID(userID, appID: layerClient.appID.absoluteString, nonce: nonce, completion: { (identityToken, error) in
+                self.requestIdentityTokenForUserID(userID, appID: layerClient.appID.absoluteString, nonce: nonce!, completion: { (identityToken, error) in
                     if identityToken.isEmpty {
                         completion(success: false, error: error)
                         return
@@ -224,10 +227,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
                     /*
                      * 3. Submit identity token to Layer for validation
                      */
-                    layerClient.authenticateWithIdentityToken(identityToken, completion: { (authenticatedUserID, error) in
-                        if !authenticatedUserID.isEmpty {
+                    layerClient.authenticateWithIdentityToken(identityToken, completion: { (authenticatedUser, error) in
+                        if (authenticatedUser != nil) {
                             completion(success: true, error: nil)
-                            print("Layer Authenticated as User: \(authenticatedUserID)")
+                            print("Layer Authenticated as User: \(authenticatedUser?.userID)")
                         } else {
                             completion(success: false, error: error)
                         }

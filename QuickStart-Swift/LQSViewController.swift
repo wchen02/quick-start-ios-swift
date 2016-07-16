@@ -139,7 +139,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         if conversations == nil || conversations!.count <= 0 {
             var convError: NSError? = nil
             do {
-                self.conversation = try layerClient!.newConversationWithParticipants(NSSet(array: [LQSParticipantUserID, LQSParticipant2UserID]) as! Set<NSObject>, options: nil)
+                self.conversation = try layerClient!.newConversationWithParticipants(NSSet(array: [LQSParticipantUserID, LQSParticipant2UserID]) as! Set<String>, options: nil)
             } catch let error as NSError {
                 convError = error
                 self.conversation = nil
@@ -176,7 +176,11 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         query.sortDescriptors = [ NSSortDescriptor(key: "position", ascending: true) ]
         
         // Set up query controller
-        queryController = layerClient!.queryControllerWithQuery(query)
+        do {
+            queryController = try layerClient!.queryControllerWithQuery(query)
+        } catch let error {
+            print("Query Controller initialization failed with error: %@", error);
+        }
         queryController!.delegate = self
         
         var error: NSError?
@@ -222,7 +226,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         if message == nil {
             return 70
         }
-        let messagePart = message!.parts[0] as! LYRMessagePart
+        let messagePart = message!.parts[0]
         
         //If it is type image
         if messagePart.MIMEType == "image/png" {
@@ -247,18 +251,18 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
     func configureCell(cell: LQSChatMessageCell, forRowAtIndexPath indexPath: NSIndexPath) {
         // Get Message Object from queryController
         let message = queryController!.objectAtIndexPath(indexPath) as? LYRMessage
-        let messagePart: LYRMessagePart = message!.parts[0] as! LYRMessagePart
+        let messagePart: LYRMessagePart = message!.parts[0] 
         
         //If it is type image
         if messagePart.MIMEType == "image/png" {
             cell.messageLabel.text = "";
             if messagePart.data != nil {
-                cell.updateWithImage(UIImage(data: messagePart.data)!)
+                cell.updateWithImage(UIImage(data: messagePart.data!)!)
             }
             
         } else {
             cell.removeImage() //just a safegaurd to ensure  that no image is present
-            cell.assignText(NSString(data: messagePart.data, encoding: NSUTF8StringEncoding) as! String)
+            cell.assignText(NSString(data: messagePart.data!, encoding: NSUTF8StringEncoding) as! String)
         }
         var timestampText = ""
         
@@ -267,15 +271,15 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
             switch message!.recipientStatusForUserID(LQSParticipantUserID) {
                 case LYRRecipientStatus.Sent:
                     cell.messageStatus.image = UIImage(named: LQSMessageSentImageName)
-                    timestampText = "Sent: \(dateFormatter.stringFromDate(message!.sentAt))"
+                    timestampText = "Sent: \(dateFormatter.stringFromDate(message!.sentAt!))"
                 
                 case LYRRecipientStatus.Delivered:
                     cell.messageStatus.image = UIImage(named: LQSMessageDeliveredImageName)
-                    timestampText = "Delivered: \(dateFormatter.stringFromDate(message!.sentAt))"
+                    timestampText = "Delivered: \(dateFormatter.stringFromDate(message!.sentAt!))"
                 
                 case LYRRecipientStatus.Read:
                     cell.messageStatus.image = UIImage(named: LQSMessageReadImageName)
-                    timestampText = "Read: \(dateFormatter.stringFromDate(message!.receivedAt))"
+                    timestampText = "Read: \(dateFormatter.stringFromDate(message!.receivedAt!))"
                 
                 case LYRRecipientStatus.Invalid:
                     print("Participant: Invalid")
@@ -288,7 +292,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
                 try message!.markAsRead()
             } catch _ {
             }
-            timestampText = "Received: \(dateFormatter.stringFromDate(message!.sentAt))"
+            timestampText = "Received: \(dateFormatter.stringFromDate(message!.sentAt!))"
         }
         
         if message!.sender.userID != nil {
@@ -303,17 +307,19 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
     func didReceiveTypingIndicator(notification: NSNotification) {
         // For more information about Typing Indicators, check out https://developer.layer.com/docs/integration/ios#typing-indicator
         
-        let dictionary: [String: AnyObject] = notification.userInfo as! [String: AnyObject]
-        let participantID = dictionary[LYRTypingIndicatorParticipantUserInfoKey] as! String
-        let typingIndicator: LYRTypingIndicator = LYRTypingIndicator(rawValue: dictionary[LYRTypingIndicatorValueUserInfoKey] as! UInt)!
+        /*let dictionary: [String: AnyObject] = notification.userInfo as! [String: AnyObject]
+        let participantID = notification.userInfo![LYRTypingIndicatorObjectUserInfoKey];
+            //dictionary[LYRTypingIndicatorParticipantUserInfoKey] as! String
+        let typingIndicator: LYRTypingIndicatorAction = notification.userInfo![LYRTypingIndicatorObjectUserInfoKey]
         
-        if (typingIndicator == LYRTypingIndicator.DidBegin) {
+        
+        if (typingIndicator == LYRTypingIndicatorAction.Begin) {
             self.typingIndicatorLabel.alpha = 1
             self.typingIndicatorLabel.text = "\(participantID) is typing..."
         } else {
             self.typingIndicatorLabel.alpha = 0
             self.typingIndicatorLabel.text = ""
-        }
+        }*/
     }
 
     // MARK: - IBActions
@@ -351,14 +357,24 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         }
         
         // Creates and returns a new message object with the given conversation and array of message parts
-        let pushMessage = "\(layerClient?.authenticatedUserID) says \(messageText)"
-        let message: LYRMessage? = try? layerClient!.newMessageWithParts([messagePart!], options: [LYRMessageOptionsPushNotificationAlertKey: pushMessage])
+        // @TODO ADD PUSH SUPPORT
+        /*let pushMessage = "\(layerClient?.authenticatedUser?.userID) says \(messageText)"
+        
+        let defaultConfiguration: LYRPushNotificationConfiguration = LYRPushNotificationConfiguration();
+        defaultConfiguration.alert = pushMessage;
+        defaultConfiguration.category = LQSCategoryIdentifier;
+        // The following dictionary will appear in push payload
+        defaultConfiguration.data = [ "test_key": "test_value"];
+        let pushOptions: LYRMessageOptions = LYRMessageOptions()
+        pushOptions.pushNotificationConfiguration(defaultConfiguration)*/
+        //let pushOptions: Dictionary = [LYRMessageOptionsPushNotificationConfigurationKey: defaultConfiguration]
+        let message: LYRMessage? = try? layerClient!.newMessageWithParts([messagePart!], options: nil)
         
         // Sends the specified message
         var error: NSError?
         let success: Bool
         do {
-            try conversation!.sendMessage(message)
+            try conversation!.sendMessage(message!)
             success = true
         } catch let error1 as NSError {
             error = error1
@@ -398,12 +414,12 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
             newNavBarBackgroundColor.getRed(&redFloat, green: &greenFloat, blue: &blueFloat, alpha: &alpha)
             
             // For more information about Metadata, check out https://developer.layer.com/docs/integration/ios#metadata
-            let metadata: NSDictionary = [ LQSBackgroundColorMetadataKey : [
+            let metadata = [ LQSBackgroundColorMetadataKey : [
                                                 LQSRedBackgroundColor : "\(redFloat)",
                                                 LQSGreenBackgroundColor : "\(greenFloat)",
                                                 LQSBlueBackgroundColor : "\(blueFloat)"]
                                         ]
-            conversation!.setValuesForMetadataKeyPathsWithDictionary(metadata as! [NSObject : AnyObject], merge: true)
+            conversation!.setValuesForMetadataKeyPathsWithDictionary(metadata, merge: true)
         }
     }
 
@@ -413,13 +429,13 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         // For more information about Typing Indicators, check out https://developer.layer.com/docs/integration/ios#typing-indicator
         
         // Sends a typing indicator event to the given conversation.
-        conversation!.sendTypingIndicator(LYRTypingIndicator.DidBegin)
+        conversation!.sendTypingIndicator(LYRTypingIndicatorAction.Begin)
         moveViewUpToShowKeyboard(true)
     }
 
     func textViewDidEndEditing(textView: UITextView) {
         // Sends a typing indicator event to the given conversation.
-        conversation!.sendTypingIndicator(LYRTypingIndicator.DidFinish)
+        conversation!.sendTypingIndicator(LYRTypingIndicatorAction.Finish)
     }
 
     // Move up the view when the keyboard is shown
@@ -459,7 +475,7 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         tableView.beginUpdates()
     }
 
-    func queryController(controller: LYRQueryController!, didChangeObject object: AnyObject!, atIndexPath indexPath: NSIndexPath!, forChangeType type: LYRQueryControllerChangeType, newIndexPath: NSIndexPath!) {
+    func queryController(controller: LYRQueryController, didChangeObject object: AnyObject, atIndexPath indexPath: NSIndexPath!, forChangeType type: LYRQueryControllerChangeType, newIndexPath: NSIndexPath!) {
         // Automatically update tableview when there are change events
         switch (type) {
             case LYRQueryControllerChangeType.Insert:
@@ -572,27 +588,24 @@ class LQSViewController: UIViewController, UITextViewDelegate, LYRQueryControlle
         } catch _ {
             messageList = nil
         }
+        let error: NSErrorPointer = nil
         
         if messageList?.count > 0 {
             
-            for (var i = 0; i < messageList?.count; i++) {
+            for (var i = 0; i < messageList?.count; i += 1) {
                 let message: LYRMessage = messageList?.objectAtIndex(i) as! LYRMessage
-                let success: Bool
-                do {
-                    try message.delete(LYRDeletionMode.AllParticipants, error: ())
-                    success = true
-                } catch _ {
-                    success = false
-                }
-                print("Message is: \(message.parts)")
+                let success = message.delete(LYRDeletionMode.AllParticipants, error: error)
                 
-                if success {
+                print("Message is: \(message.parts)")
+
+                if (success) {
                     print("The message has been deleted")
-                }else {
+                } else {
                     print("Error")
                 }
             }
-            
+        } else {
+            print("Failed querying for messages: %@", error);
         }
         photo = nil
         sendingImage = false

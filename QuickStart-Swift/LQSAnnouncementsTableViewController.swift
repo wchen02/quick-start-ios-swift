@@ -12,13 +12,20 @@ class LQSAnnouncementsTableViewController: UITableViewController, UIAlertViewDel
         let query = LYRQuery(queryableClass: LYRAnnouncement.self)
         query.sortDescriptors = [ NSSortDescriptor(key: "position", ascending: false) ]
         
-        queryController = layerClient!.queryControllerWithQuery(query)
+        do {
+            try queryController = layerClient!.queryControllerWithQuery(query)
+        } catch let error {
+            print("Announcements Query Controller initialization failed with error: %@", error);
+        }
         queryController!.delegate = self
         do {
             try queryController!.execute()
-        } catch _ {
+        } catch let error {
+            print("Announcements Query failed with error: %@", error);
         }
-        
+
+        print("Announcements Query fetched %tu announcement objects", self.queryController?.numberOfObjectsInSection(0));
+
         if queryController!.count() <= 0 {
             let emptyView: UIView = UIView(frame: CGRectMake(0, 0, 320, 100))
             emptyView.backgroundColor = UIColor.whiteColor()
@@ -84,13 +91,13 @@ class LQSAnnouncementsTableViewController: UITableViewController, UIAlertViewDel
         let announcementsInfo: LYRAnnouncement = queryController!.objectAtIndexPath(indexPath) as! LYRAnnouncement
         let message: LYRMessage = queryController!.objectAtIndexPath(indexPath) as! LYRMessage
         
-        let messagePart: LYRMessagePart = message.parts[0] as! LYRMessagePart
+        let messagePart: LYRMessagePart = message.parts[0] 
         let dateFormat = NSDateFormatter()
         
-        let announcementMessage = NSString(data: messagePart.data, encoding: NSUTF8StringEncoding)
+        let announcementMessage = NSString(data: messagePart.data!, encoding: NSUTF8StringEncoding)
         dateFormat.dateFormat = "yyyy-MM-dd"
-        cell!.updateDate("\(dateFormat.stringFromDate(announcementsInfo.sentAt))")
-        cell!.updateSenderName(announcementsInfo.sender.name)
+        cell!.updateDate("\(dateFormat.stringFromDate(announcementsInfo.sentAt!))")
+        cell!.updateSenderName(announcementsInfo.sender.displayName)
         cell!.updateMessageLabel(announcementMessage as! String)
         
         if (announcementsInfo.isUnread) {
@@ -109,7 +116,7 @@ class LQSAnnouncementsTableViewController: UITableViewController, UIAlertViewDel
 
 // MARK: - Query controller delegate implementation
 
-    func queryController(controller: LYRQueryController, didChangeObject object: AnyObject!, atIndexPath indexPath: NSIndexPath!, forChangeType type: LYRQueryControllerChangeType, newIndexPath: NSIndexPath!) {
+    func queryController(controller: LYRQueryController, didChangeObject object: AnyObject, atIndexPath indexPath: NSIndexPath!, forChangeType type: LYRQueryControllerChangeType, newIndexPath: NSIndexPath!) {
         switch (type) {
             case LYRQueryControllerChangeType.Delete:
                 tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
