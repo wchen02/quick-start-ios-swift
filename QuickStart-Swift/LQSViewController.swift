@@ -1,4 +1,5 @@
 import UIKit
+import LayerKit
 
 // Metadata keys related to navbar color
 let LQSBackgroundColorMetadataKey = "backgroundColor"

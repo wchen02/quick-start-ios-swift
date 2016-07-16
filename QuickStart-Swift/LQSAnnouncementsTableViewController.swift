@@ -1,4 +1,5 @@
 import UIKit
+import LayerKit
 
 class LQSAnnouncementsTableViewController: UITableViewController, UIAlertViewDelegate, LYRQueryControllerDelegate {
     private var queryController: LYRQueryController?

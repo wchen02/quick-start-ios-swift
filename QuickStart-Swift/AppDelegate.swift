@@ -1,27 +1,27 @@
 import UIKit
+import LayerKit
 
 /**
  Layer App ID from developer.layer.com
  */
-let LQSLayerAppIDString = "LAYER_APP_ID"
+let LQSLayerAppIDString = "layer:///apps/staging/8ef0d846-3189-11e6-8ca8-2f691d0f52c4"
 
 #if arch(i386) || arch(x86_64) // Simulator
     
 // If on simulator set the user ID to Simulator and participant to Device
-let LQSCurrentUserID = "Simulator"
-let LQSParticipantUserID = "Device"
+let LQSCurrentUserID = "1"
+let LQSParticipantUserID = "19"
 let LQSInitialMessageText = "Hey Device! This is your friend, Simulator."
     
 #else // Device
 
 // If on device set the user ID to Device and participant to Simulator
-let LQSCurrentUserID = "Device"
-let LQSParticipantUserID = "Simulator"
+let LQSCurrentUserID = "19"
+let LQSParticipantUserID = "1"
 let LQSInitialMessageText = "Hey Simulator! This is your friend, Device."
     
 #endif
 
-//let LQSParticipant2UserID = "Dashboard"
 let LQSParticipant2UserID = "75"
 let LQSCategoryIdentifier = "category_lqs";
 let LQSAcceptIdentifier = "ACCEPT_IDENTIFIER";
@@ -69,8 +69,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             registerApplicationForPushNotifications(application)
             
             let navigationController: UINavigationController = self.window!.rootViewController as! UINavigationController
-            let viewController: LQSViewController = navigationController.topViewController as! LQSViewController
-            viewController.layerClient = layerClient
+            //let viewController: LQSViewController = navigationController.topViewController as! LQSViewController
+            //viewController.layerClient = layerClient
+            
+            let viewController: ConversationListViewController = navigationController.topViewController as! ConversationListViewController
+            //viewController.layerClient = layerClient
         }
         return true
     }
