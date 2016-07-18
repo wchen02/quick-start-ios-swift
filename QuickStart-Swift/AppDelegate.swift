@@ -73,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             //viewController.layerClient = layerClient
             
             let viewController: ConversationListViewController = navigationController.topViewController as! ConversationListViewController
-            //viewController.layerClient = layerClient
+            viewController.layerClient = layerClient
         }
         return true
     }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C60EB1C1D3D8D5E0017EEBE /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C60EB1B1D3D8D5E0017EEBE /* ConversationViewController.swift */; };
+		2C60EB1E1D3D91650017EEBE /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C60EB1D1D3D91650017EEBE /* MessageCell.swift */; };
 		2C9BA1261D3AD386006D3A54 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9BA1251D3AD386006D3A54 /* ConversationCell.swift */; };
 		2C9BA1281D3AD442006D3A54 /* ConversationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9BA1271D3AD442006D3A54 /* ConversationListViewController.swift */; };
 		45640E9CD964128FF774ADF9 /* Pods_QuickStart_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A1CFA54E2681F3CD01A14D /* Pods_QuickStart_Swift.framework */; };
@@ -34,6 +36,8 @@
 /* Begin PBXFileReference section */
 		08A1CFA54E2681F3CD01A14D /* Pods_QuickStart_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QuickStart_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A08DC430582E232D83747A8 /* Pods-QuickStart-Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QuickStart-Swift.release.xcconfig"; path = "Pods/Target Support Files/Pods-QuickStart-Swift/Pods-QuickStart-Swift.release.xcconfig"; sourceTree = "<group>"; };
+		2C60EB1B1D3D8D5E0017EEBE /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
+		2C60EB1D1D3D91650017EEBE /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		2C9BA1251D3AD386006D3A54 /* ConversationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
 		2C9BA1271D3AD442006D3A54 /* ConversationListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationListViewController.swift; sourceTree = "<group>"; };
 		C83598E01B4C8F010050B21F /* QuickStart-Swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickStart-Swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +151,7 @@
 				C89BDA991B4D7E4300D6AB37 /* LQSChatMessageCell.swift */,
 				C862CDD21B54082200BFBA1E /* LQSAnnouncementsTableViewCell.swift */,
 				2C9BA1251D3AD386006D3A54 /* ConversationCell.swift */,
+				2C60EB1D1D3D91650017EEBE /* MessageCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 				C83598E71B4C8F010050B21F /* LQSViewController.swift */,
 				C862CDD01B53ECA300BFBA1E /* LQSAnnouncementsTableViewController.swift */,
 				2C9BA1271D3AD442006D3A54 /* ConversationListViewController.swift */,
+				2C60EB1B1D3D8D5E0017EEBE /* ConversationViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -325,11 +331,13 @@
 			files = (
 				C83598E81B4C8F010050B21F /* LQSViewController.swift in Sources */,
 				C862CDD31B54082200BFBA1E /* LQSAnnouncementsTableViewCell.swift in Sources */,
+				2C60EB1C1D3D8D5E0017EEBE /* ConversationViewController.swift in Sources */,
 				2C9BA1261D3AD386006D3A54 /* ConversationCell.swift in Sources */,
 				2C9BA1281D3AD442006D3A54 /* ConversationListViewController.swift in Sources */,
 				C862CDD11B53ECA300BFBA1E /* LQSAnnouncementsTableViewController.swift in Sources */,
 				C89BDA9A1B4D7E4300D6AB37 /* LQSChatMessageCell.swift in Sources */,
 				C83598E61B4C8F010050B21F /* AppDelegate.swift in Sources */,
+				2C60EB1E1D3D91650017EEBE /* MessageCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
