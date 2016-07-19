@@ -68,12 +68,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             // Register for push
             registerApplicationForPushNotifications(application)
             
-            let navigationController: UINavigationController = self.window!.rootViewController as! UINavigationController
+//            let navigationController: UINavigationController = self.window!.rootViewController as! UINavigationController
             //let viewController: LQSViewController = navigationController.topViewController as! LQSViewController
             //viewController.layerClient = layerClient
             
-            let viewController: ConversationListViewController = navigationController.topViewController as! ConversationListViewController
-            viewController.layerClient = layerClient
+//            let viewController: ConversationListViewController = navigationController.topViewController as! ConversationListViewController
+//            viewController.layerClient = layerClient
+            
+            let viewController: ConversationListViewController = ConversationListViewController(layerClient: layerClient)
+            let navigationController = UINavigationController(rootViewController: viewController)
+            self.window!.rootViewController = navigationController
         }
         return true
     }
