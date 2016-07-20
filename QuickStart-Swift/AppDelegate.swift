@@ -22,7 +22,7 @@ let LQSInitialMessageText = "Hey Simulator! This is your friend, Device."
     
 #endif
 
-let LQSParticipant2UserID = "75"
+//let LQSParticipant2UserID = "75"
 let LQSCategoryIdentifier = "category_lqs";
 let LQSAcceptIdentifier = "ACCEPT_IDENTIFIER";
 let LQSIgnoreIdentifier = "IGNORE_IDENTIFIER";
@@ -45,7 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             // Initializes a LYRClient object
             let appID: NSURL = NSURL(string: LQSLayerAppIDString)!
             layerClient = LYRClient(appID: appID)
-//            layerClient.delegate = self
             layerClient.autodownloadMIMETypes = Set<String>(arrayLiteral: "image/png")
             
             // Connect to Layer
@@ -60,6 +59,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
                             print("Failed Authenticating Layer Client with error:\(error)")
                         } else {
                             print("successfully authenticated")
+                            
+                            var users = [User]()
+                            let newUser = User(userID: "1", firstName: "wen", lastName: "chen", avatarUrl: "http://www.iconarchive.com/download/i51048/hopstarter/halloween-avatars/Mask-3.ico")
+                            users.append(newUser)
+                            
+                            let newUser2 = User(userID: "19", firstName: "wen2", lastName: "chen", avatarUrl: "http://www.iconarchive.com/download/i47415/hopstarter/face-avatars/Female-Face-FC-5.ico")
+                            users.append(newUser)
+                            
+                            let newUser3 = User(userID: "75", firstName: "wen3", lastName: "chen", avatarUrl: "http://findicons.com/files/icons/1072/face_avatars/300/i04.png")
+                            users.append(newUser)
+                            
+                            
+                            UserManager.sharedManager.cacheUserIfNeeded(newUser)
+                            UserManager.sharedManager.cacheUserIfNeeded(newUser2)
+                            UserManager.sharedManager.cacheUserIfNeeded(newUser3)
+                            let viewController: ConversationListViewController = ConversationListViewController(layerClient: self.layerClient)
+                            let navigationController = UINavigationController(rootViewController: viewController)
+                            self.window!.rootViewController = navigationController
                         }
                     }
                 }
@@ -67,17 +84,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
             
             // Register for push
             registerApplicationForPushNotifications(application)
-            
-//            let navigationController: UINavigationController = self.window!.rootViewController as! UINavigationController
-            //let viewController: LQSViewController = navigationController.topViewController as! LQSViewController
-            //viewController.layerClient = layerClient
-            
-//            let viewController: ConversationListViewController = navigationController.topViewController as! ConversationListViewController
-//            viewController.layerClient = layerClient
-            
-            let viewController: ConversationListViewController = ConversationListViewController(layerClient: layerClient)
-            let navigationController = UINavigationController(rootViewController: viewController)
-            self.window!.rootViewController = navigationController
         }
         return true
     }

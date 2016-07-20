@@ -8,7 +8,8 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
         
         self.dataSource = self
         self.delegate = self
-        
+        self.displaysAvatarItem = true
+
         self.navigationController!.navigationBar.tintColor = ATLBlueColor()
         
         let title = NSLocalizedString("Logout", comment: "")
@@ -33,83 +34,86 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
         print("Failed to delete conversation with error: \(error)")
     }
     
-    /*func conversationListViewController(conversationListViewController: ATLConversationListViewController, didSearchForText searchText: String, completion: ((Set<NSObject>!) -> Void)?) {
-     UserManager.sharedManager.queryForUserWithName(searchText) { (participants: NSArray?, error: NSError?) in
-     if error == nil {
-     if let callback = completion {
-     callback(NSSet(array: participants as! [AnyObject]) as Set<NSObject>)
-     }
-     } else {
-     if let callback = completion {
-     callback(nil)
-     }
-     print("Error searching for Users by name: \(error)")
-     }
-     }
-     }*/
-//    
-//    func conversationListViewController(conversationListViewController: ATLConversationListViewController!, avatarItemForConversation conversation: LYRConversation!) -> ATLAvatarItem! {
-//        guard let lastMessage = conversation.lastMessage else {
-//            return nil
-//        }
-//        guard let userID: String = lastMessage.sender.userID else {
-//            return nil
-//        }
-//        /*if userID == PFUser.currentUser()?.objectId {
-//         return PFUser.currentUser()
-//         }*/
-//        /*let user: PFUser? = UserManager.sharedManager.cachedUserForUserID(userID)
-//        if user == nil {
-//            UserManager.sharedManager.queryAndCacheUsersWithIDs([userID], completion: { (participants, error) in
-//                if participants != nil && error == nil {
-//                    self.reloadCellForConversation(conversation)
-//                } else {
-//                    print("Error querying for users: \(error)")
+//    func conversationListViewController(conversationListViewController: ATLConversationListViewController, didSearchForText searchText: String, completion: ((Set<NSObject>!) -> Void)?) {
+//        UserManager.sharedManager.queryForUserWithName(searchText) { (participants: NSArray?, error: NSError?) in
+//            if error == nil {
+//                if let callback = completion {
+//                    callback(NSSet(array: participants as! [AnyObject]) as Set<NSObject>)
 //                }
-//            })
+//            } else {
+//                if let callback = completion {
+//                    callback(nil)
+//                }
+//                print("Error searching for Users by name: \(error)")
+//            }
 //        }
-//        return user;*/
 //    }
+    
+    func conversationListViewController(conversationListViewController: ATLConversationListViewController!, avatarItemForConversation conversation: LYRConversation!) -> ATLAvatarItem! {
+        guard let lastMessage = conversation.lastMessage else {
+            return nil
+        }
+        guard let userID: String = lastMessage.sender.userID else {
+            return nil
+        }
+        if userID == LQSCurrentUserID {
+            return UserManager.sharedManager.cachedUserForUserID(LQSCurrentUserID)
+        }
+        var user: User? = UserManager.sharedManager.cachedUserForUserID(userID)
+        if user == nil {
+            user = User(userID: "75", firstName: "wen3", lastName: "chen", avatarUrl: "http://findicons.com/files/icons/1072/face_avatars/300/i04.png")
+            // @TODO: query from remote server
+            //            UserManager.sharedManager.queryAndCacheUsersWithIDs([userID], completion: { (participants, error) in
+            //                if participants != nil && error == nil {
+            //                    self.reloadCellForConversation(conversation)
+            //                } else {
+            //                    print("Error querying for users: \(error)")
+            //                }
+            //            })
+        }
+        return user
+    }
     
     // MARK - ATLConversationListViewControllerDataSource Methods
     
     func conversationListViewController(conversationListViewController: ATLConversationListViewController, titleForConversation conversation: LYRConversation) -> String {
-//        if let title = conversation.metadata?["title"] {
-//            return title as! String
-//        } else {
-//            let listOfParticipant = Array(conversation.participants)
-//            let unresolvedParticipants: NSArray = UserManager.sharedManager.unCachedUserIDsFromParticipants(listOfParticipant)
-//            let resolvedNames: NSArray = UserManager.sharedManager.resolvedNamesFromParticipants(listOfParticipant)
-//            
-//            if (unresolvedParticipants.count > 0) {
-//                UserManager.sharedManager.queryAndCacheUsersWithIDs(unresolvedParticipants as! [String]) { (participants: NSArray?, error: NSError?) in
-//                    if (error == nil) {
-//                        if (participants?.count > 0) {
-//                            self.reloadCellForConversation(conversation)
-//                        }
-//                    } else {
-//                        print("Error querying for Users: \(error)")
-//                    }
-//                }
-//            }
-//            
-//            if (resolvedNames.count > 0 && unresolvedParticipants.count > 0) {
-//                let resolved = resolvedNames.componentsJoinedByString(", ")
-//                return "\(resolved) and \(unresolvedParticipants.count) others"
-//            } else if (resolvedNames.count > 0 && unresolvedParticipants.count == 0) {
-//                return resolvedNames.componentsJoinedByString(", ")
-//            } else {
-//                return "Conversation with \(conversation.participants.count) users..."
-//            }
-//        }
-        return "title"
+        if let title = conversation.metadata?["title"] {
+            return title as! String
+        } else {
+            let listOfParticipant = conversation.participants
+            let unresolvedParticipants: NSArray = UserManager.sharedManager.unCachedUserIDsFromParticipants(listOfParticipant)
+            let resolvedNames: NSArray = UserManager.sharedManager.resolvedNamesFromParticipants(listOfParticipant)
+            
+            if (unresolvedParticipants.count > 0) {
+                print("unable to resolve \(unresolvedParticipants.count) people")
+                // @TODO query from remote server
+                //                UserManager.sharedManager.queryAndCacheUsersWithIDs(unresolvedParticipants as! [String]) { (participants: NSArray?, error: NSError?) in
+                //                    if (error == nil) {
+                //                        if (participants?.count > 0) {
+                //                            self.reloadCellForConversation(conversation)
+                //                        }
+                //                    } else {
+                //                        print("Error querying for Users: \(error)")
+                //                    }
+                //                }
+            }
+            
+            if (resolvedNames.count > 0 && unresolvedParticipants.count > 0) {
+                let resolved = resolvedNames.componentsJoinedByString(", ")
+                return "\(resolved) and \(unresolvedParticipants.count) others"
+            } else if (resolvedNames.count > 0 && unresolvedParticipants.count == 0) {
+                return resolvedNames.componentsJoinedByString(", ")
+            } else {
+                return "Conversation with \(conversation.participants.count) users..."
+            }
+        }
     }
     
     
     // MARK:- Conversation Selection From Push Notification
     
     func presentConversation(conversation: LYRConversation) {
-        self.presentControllerWithConversation(conversation)
+        //        self.presentControllerWithConversation(conversation)
     }
     
     // MARK:- Conversation Selection

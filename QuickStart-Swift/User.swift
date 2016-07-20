@@ -3,33 +3,26 @@ import Atlas
 
 class User: NSObject, ATLParticipant {
     
-    @objc var firstName: String {
-        return "1"//self.username!
-    }
+    var firstName: String
     
-    @objc var lastName: String {
-        return "Test"
-    }
+    var lastName: String
     
-    @objc var displayName: String {
-        return "\(self.firstName) \(self.lastName)"
-    }
+    var displayName: String
     
-    @objc var userID: String {
-        return "0"
-    }
+    var userID: String
     
-    @objc var avatarImageURL: NSURL? {
-        return nil
-    }
+    var avatarImageURL: NSURL?
     
-    @objc var avatarImage: UIImage? {
-        return nil
-    }
+    var avatarImage: UIImage?
     
-    @objc var avatarInitials: String? {
-        let initials = "\(getFirstCharacter(self.firstName))\(getFirstCharacter(self.lastName))"
-        return initials.uppercaseString
+    var avatarInitials: String?
+
+    init(userID: String, firstName: String, lastName: String, avatarUrl: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.displayName = "\(firstName) \(lastName)"
+        self.userID = userID
+        self.avatarImageURL = NSURL(string: avatarUrl)
     }
     
     private func getFirstCharacter(value: String) -> String {

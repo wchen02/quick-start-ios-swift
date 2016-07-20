@@ -9,12 +9,12 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
         super.viewDidLoad()
         self.dataSource = self
         self.delegate = self
-        print("addressBarController: \(self.addressBarController)")
         self.addressBarController.delegate = self
         
         // Uncomment the following line if you want to show avatars in 1:1 conversations
-        // self.shouldDisplayAvatarItemForOneOtherParticipant = true
-        
+        self.shouldDisplayAvatarItemForOneOtherParticipant = true
+        self.shouldDisplayAvatarItemForAuthenticatedUser = true
+
         // Setup the dateformatter used by the dataSource.
         self.dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
         self.dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
@@ -44,11 +44,10 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
     
     // MARK - ATLConversationViewControllerDataSource methods
     func conversationViewController(conversationViewController: ATLConversationViewController, participantForIdentity identity: LYRIdentity) -> ATLParticipant {
-//        if (identity.userID == PFUser.currentUser()?.objectId) {
-//            return PFUser.currentUser()!
-//        }
-//        let user: PFUser? = UserManager.sharedManager.cachedUserForUserID(identity.userID)
-//        if (user == nil) {
+        var user: User? = UserManager.sharedManager.cachedUserForUserID(identity.userID)
+        if (user == nil) {
+            user = User(userID: "75", firstName: "wen3", lastName: "chen", avatarUrl: "http://findicons.com/files/icons/1072/face_avatars/300/i04.png")
+            // @TODO: query from remote server
 //            UserManager.sharedManager.queryAndCacheUsersWithIDs([identity.userID]) { (participants: NSArray?, error: NSError?) -> Void in
 //                if (participants?.count > 0 && error == nil) {
 //                    self.addressBarController.reloadView()
@@ -58,9 +57,8 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
 //                    print("Error querying for users: \(error)")
 //                }
 //            }
-//        }
-//        return user!
-        return User()
+        }
+        return user!
     }
     
     func conversationViewController(conversationViewController: ATLConversationViewController, attributedStringForDisplayOfDate date: NSDate) -> NSAttributedString {
