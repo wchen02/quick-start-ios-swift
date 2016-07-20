@@ -1,5 +1,6 @@
 import UIKit
 import LayerKit
+import Alamofire
 
 /**
  Layer App ID from developer.layer.com

@@ -6,5 +6,6 @@ use_frameworks!
 target 'QuickStart-Swift' do
   pod 'LayerKit'
   pod 'Atlas'
+  pod 'Alamofire', '~> 3.4'
 end
 

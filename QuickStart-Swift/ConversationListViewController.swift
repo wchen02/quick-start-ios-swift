@@ -88,15 +88,15 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
             if (unresolvedParticipants.count > 0) {
                 print("unable to resolve \(unresolvedParticipants.count) people")
                 // @TODO query from remote server
-                //                UserManager.sharedManager.queryAndCacheUsersWithIDs(unresolvedParticipants as! [String]) { (participants: NSArray?, error: NSError?) in
-                //                    if (error == nil) {
-                //                        if (participants?.count > 0) {
-                //                            self.reloadCellForConversation(conversation)
-                //                        }
-                //                    } else {
-                //                        print("Error querying for Users: \(error)")
-                //                    }
-                //                }
+                UserManager.sharedManager.queryAndCacheUsersWithIDs(unresolvedParticipants as! [String]) { (participants: NSArray?, error: NSError?) in
+                    if (error == nil) {
+                        if (participants?.count > 0) {
+                            self.reloadCellForConversation(conversation)
+                        }
+                    } else {
+                        print("Error querying for Users: \(error)")
+                    }
+                }
             }
             
             if (resolvedNames.count > 0 && unresolvedParticipants.count > 0) {

@@ -1,5 +1,6 @@
 import Foundation
 import LayerKit
+import Alamofire
 
 class UserManager {
     static let sharedManager = UserManager()
@@ -48,21 +49,38 @@ class UserManager {
 //        }
 //    }
 //    
-//    func queryAndCacheUsersWithIDs(userIDs: [String], completion: ((NSArray?, NSError?) -> Void)?) {
-//        let query: PFQuery! = User.query()
-//        query.whereKey("userID", containedIn: userIDs)
-//        query.findObjectsInBackgroundWithBlock { objects, error in
-//            if (error == nil) {
-//                for user: User in (objects as! [User]) {
-//                    self.cacheUserIfNeeded(user)
-//                }
-//            }
-//            if let callback = completion {
-//                callback(objects, error)
-//            }
-//        }
-//    }
-//    
+    
+    func queryAndCacheUsersWithIDs(userIDs: [String], completion: ((NSArray?, NSError?) -> Void)?) {
+        for userId in userIDs {
+            let user = getUser(userId)
+            UserManager.sharedManager.cacheUserIfNeeded(user)
+        }
+        
+        if let callback = completion {
+            callback(objects, error)
+        }
+    }
+    
+    func getUser(userId: String) -> User {
+        let apiEndPoint = "http://108.61.159.150/~socialmedia"
+        let headers: [String: String] = [
+            "Authorization": "Basic YWRtaW46TllUd2ViQDU1MTQ=",
+            "Accept": "application/json"
+        ]
+        
+        Alamofire.request(.GET, "\(apiEndPoint)/wp-json/cqg/v1/user_info", parameters: ["id": userId], headers: headers)
+            .responseJSON { response in
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    print("JSON: \(JSON)")
+                }
+        }
+    }
+    
     func cachedUserForUserID(userID: NSString) -> User? {
         if self.userCache.objectForKey(userID) != nil {
             return self.userCache.objectForKey(userID) as! User?
