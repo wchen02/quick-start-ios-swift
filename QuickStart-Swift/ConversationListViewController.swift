@@ -76,6 +76,7 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
     
     // MARK - ATLConversationListViewControllerDataSource Methods
     
+    // @TODO: fix title
     func conversationListViewController(conversationListViewController: ATLConversationListViewController, titleForConversation conversation: LYRConversation) -> String {
         if let title = conversation.metadata?["title"] {
             return title as! String
