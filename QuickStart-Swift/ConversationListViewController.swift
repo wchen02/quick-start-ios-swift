@@ -11,8 +11,8 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
         self.displaysAvatarItem = true
 
         self.navigationController!.navigationBar.tintColor = ATLBlueColor()
-        
-        let title = NSLocalizedString("Logout", comment: "")
+        self.title = "聊天"
+//        let title = NSLocalizedString("Logout", comment: "")
 //        let logoutItem = UIBarButtonItem(title: title, style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ConversationListViewController.logoutButtonTapped(_:)))
 //        self.navigationItem.setLeftBarButtonItem(logoutItem, animated: false)
     }
