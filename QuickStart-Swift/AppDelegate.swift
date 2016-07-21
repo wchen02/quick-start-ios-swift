@@ -1,29 +1,15 @@
 import UIKit
 import LayerKit
 import Alamofire
+import SwiftyJSON
 
 /**
  Layer App ID from developer.layer.com
  */
 let LQSLayerAppIDString = "layer:///apps/staging/8ef0d846-3189-11e6-8ca8-2f691d0f52c4"
 
-#if arch(i386) || arch(x86_64) // Simulator
-    
-// If on simulator set the user ID to Simulator and participant to Device
 let LQSCurrentUserID = "1"
-let LQSParticipantUserID = "19"
-let LQSInitialMessageText = "Hey Device! This is your friend, Simulator."
-    
-#else // Device
 
-// If on device set the user ID to Device and participant to Simulator
-let LQSCurrentUserID = "19"
-let LQSParticipantUserID = "1"
-let LQSInitialMessageText = "Hey Simulator! This is your friend, Device."
-    
-#endif
-
-//let LQSParticipant2UserID = "75"
 let LQSCategoryIdentifier = "category_lqs";
 let LQSAcceptIdentifier = "ACCEPT_IDENTIFIER";
 let LQSIgnoreIdentifier = "IGNORE_IDENTIFIER";
@@ -61,20 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, LYRClientDelegate {
                         } else {
                             print("successfully authenticated")
                             
-                            var users = [User]()
-                            let newUser = User(userID: "1", firstName: "wen", lastName: "chen", avatarUrl: "http://www.iconarchive.com/download/i51048/hopstarter/halloween-avatars/Mask-3.ico")
-                            users.append(newUser)
-                            
-                            let newUser2 = User(userID: "19", firstName: "wen2", lastName: "chen", avatarUrl: "http://www.iconarchive.com/download/i47415/hopstarter/face-avatars/Female-Face-FC-5.ico")
-                            users.append(newUser)
-                            
-                            let newUser3 = User(userID: "75", firstName: "wen3", lastName: "chen", avatarUrl: "http://findicons.com/files/icons/1072/face_avatars/300/i04.png")
-                            users.append(newUser)
-                            
-                            
-                            UserManager.sharedManager.cacheUserIfNeeded(newUser)
-                            UserManager.sharedManager.cacheUserIfNeeded(newUser2)
-                            UserManager.sharedManager.cacheUserIfNeeded(newUser3)
                             let viewController: ConversationListViewController = ConversationListViewController(layerClient: self.layerClient)
                             let navigationController = UINavigationController(rootViewController: viewController)
                             self.window!.rootViewController = navigationController

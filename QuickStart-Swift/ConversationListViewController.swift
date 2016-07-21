@@ -13,11 +13,8 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
         self.navigationController!.navigationBar.tintColor = ATLBlueColor()
         
         let title = NSLocalizedString("Logout", comment: "")
-        let logoutItem = UIBarButtonItem(title: title, style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ConversationListViewController.logoutButtonTapped(_:)))
-        self.navigationItem.setLeftBarButtonItem(logoutItem, animated: false)
-        
-        let composeItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: #selector(ConversationListViewController.composeButtonTapped(_:)))
-        self.navigationItem.setRightBarButtonItem(composeItem, animated: false)
+//        let logoutItem = UIBarButtonItem(title: title, style: UIBarButtonItemStyle.Plain, target: self, action: #selector(ConversationListViewController.logoutButtonTapped(_:)))
+//        self.navigationItem.setLeftBarButtonItem(logoutItem, animated: false)
     }
     
     // MARK - ATLConversationListViewControllerDelegate Methods
@@ -56,27 +53,23 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
         guard let userID: String = lastMessage.sender.userID else {
             return nil
         }
-        if userID == LQSCurrentUserID {
-            return UserManager.sharedManager.cachedUserForUserID(LQSCurrentUserID)
-        }
         var user: User? = UserManager.sharedManager.cachedUserForUserID(userID)
         if user == nil {
-            user = User(userID: "75", firstName: "wen3", lastName: "chen", avatarUrl: "http://findicons.com/files/icons/1072/face_avatars/300/i04.png")
-            // @TODO: query from remote server
-            //            UserManager.sharedManager.queryAndCacheUsersWithIDs([userID], completion: { (participants, error) in
-            //                if participants != nil && error == nil {
-            //                    self.reloadCellForConversation(conversation)
-            //                } else {
-            //                    print("Error querying for users: \(error)")
-            //                }
-            //            })
+            // returns a placeholder user before the user is fetch
+            user = User(userID: "-1", firstName: "", lastName: "", avatarUrl: "")
+            UserManager.sharedManager.queryAndCacheUsersWithIDs([userID], completion: { (participants, error) in
+                if participants != nil && error == nil {
+                    self.reloadCellForConversation(conversation)
+                } else {
+                    print("Error querying for users: \(error)")
+                }
+            })
         }
         return user
     }
     
     // MARK - ATLConversationListViewControllerDataSource Methods
     
-    // @TODO: fix title
     func conversationListViewController(conversationListViewController: ATLConversationListViewController, titleForConversation conversation: LYRConversation) -> String {
         if let title = conversation.metadata?["title"] {
             return title as! String
@@ -87,7 +80,6 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
             
             if (unresolvedParticipants.count > 0) {
                 print("unable to resolve \(unresolvedParticipants.count) people")
-                // @TODO query from remote server
                 UserManager.sharedManager.queryAndCacheUsersWithIDs(unresolvedParticipants as! [String]) { (participants: NSArray?, error: NSError?) in
                     if (error == nil) {
                         if (participants?.count > 0) {
@@ -138,23 +130,23 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
     
     
     // MARK - Actions
-    
-    func composeButtonTapped(sender: AnyObject) {
-        let controller = ConversationViewController(layerClient: self.layerClient)
-        controller.displaysAddressBar = true
-        self.navigationController!.pushViewController(controller, animated: true)
-    }
-    
-    func logoutButtonTapped(sender: AnyObject) {
-        print("logOutButtonTapAction")
-        
-        self.layerClient.deauthenticateWithCompletion { (success: Bool, error: NSError?) in
-            if error == nil {
-                //PFUser.logOut()
-                self.navigationController!.popToRootViewControllerAnimated(true)
-            } else {
-                print("Failed to deauthenticate: \(error)")
-            }
-        }
-    }
+//    
+//    func composeButtonTapped(sender: AnyObject) {
+//        let controller = ConversationViewController(layerClient: self.layerClient)
+//        controller.displaysAddressBar = true
+//        self.navigationController!.pushViewController(controller, animated: true)
+//    }
+//    
+//    func logoutButtonTapped(sender: AnyObject) {
+//        print("logOutButtonTapAction")
+//        
+//        self.layerClient.deauthenticateWithCompletion { (success: Bool, error: NSError?) in
+//            if error == nil {
+//                //PFUser.logOut()
+//                self.navigationController!.popToRootViewControllerAnimated(true)
+//            } else {
+//                print("Failed to deauthenticate: \(error)")
+//            }
+//        }
+//    }
 }

@@ -10,7 +10,6 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
         self.dataSource = self
         self.delegate = self
         self.addressBarController.delegate = self
-        
         // Uncomment the following line if you want to show avatars in 1:1 conversations
         self.shouldDisplayAvatarItemForOneOtherParticipant = true
         self.shouldDisplayAvatarItemForAuthenticatedUser = true
@@ -28,7 +27,6 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
         self.title = getTitle()
     }
     
-    // @TODO: fix title
     func getTitle() -> String {
         if let title = conversation.metadata?["title"] {
             return title as! String
@@ -39,16 +37,15 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
             
             if (unresolvedParticipants.count > 0) {
                 print("unable to resolve \(unresolvedParticipants.count) people")
-                // @TODO query from remote server
-                //                UserManager.sharedManager.queryAndCacheUsersWithIDs(unresolvedParticipants as! [String]) { (participants: NSArray?, error: NSError?) in
-                //                    if (error == nil) {
-                //                        if (participants?.count > 0) {
-                //                            self.reloadCellForConversation(conversation)
-                //                        }
-                //                    } else {
-                //                        print("Error querying for Users: \(error)")
-                //                    }
-                //                }
+                UserManager.sharedManager.queryAndCacheUsersWithIDs(unresolvedParticipants as! [String]) { (participants: NSArray?, error: NSError?) in
+                    if (error == nil) {
+                        if (participants?.count > 0) {
+                            //self.reloadCellForMessage(self.message)
+                        }
+                    } else {
+                        print("Error querying for Users: \(error)")
+                    }
+                }
             }
             
             if (resolvedNames.count > 0 && unresolvedParticipants.count > 0) {
@@ -80,17 +77,17 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
     func conversationViewController(conversationViewController: ATLConversationViewController, participantForIdentity identity: LYRIdentity) -> ATLParticipant {
         var user: User? = UserManager.sharedManager.cachedUserForUserID(identity.userID)
         if (user == nil) {
-            user = User(userID: "75", firstName: "wen3", lastName: "chen", avatarUrl: "http://findicons.com/files/icons/1072/face_avatars/300/i04.png")
-            // @TODO: query from remote server
-//            UserManager.sharedManager.queryAndCacheUsersWithIDs([identity.userID]) { (participants: NSArray?, error: NSError?) -> Void in
-//                if (participants?.count > 0 && error == nil) {
-//                    self.addressBarController.reloadView()
-//                    // TODO: Need a good way to refresh all the messages for the refreshed participants...
-//                    self.reloadCellsForMessagesSentByParticipantWithIdentifier(identity.userID)
-//                } else {
-//                    print("Error querying for users: \(error)")
-//                }
-//            }
+            // returns a placeholder user before the user is fetch
+            user = User(userID: "-1", firstName: "", lastName: "", avatarUrl: "")
+            UserManager.sharedManager.queryAndCacheUsersWithIDs([identity.userID]) { (participants: NSArray?, error: NSError?) -> Void in
+                if (participants?.count > 0 && error == nil) {
+                    self.addressBarController.reloadView()
+                    // TODO: Need a good way to refresh all the messages for the refreshed participants...
+                    self.reloadCellsForMessagesSentByParticipantWithIdentifier(identity.userID)
+                } else {
+                    print("Error querying for users: \(error)")
+                }
+            }
         }
         return user!
     }

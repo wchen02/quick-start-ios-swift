@@ -1,6 +1,7 @@
 import Foundation
 import LayerKit
 import Alamofire
+import SwiftyJSON
 
 class UserManager {
     static let sharedManager = UserManager()
@@ -22,7 +23,6 @@ class UserManager {
     
     // MARK Query Methods
 //    func queryForUserWithName(searchText: String, completion: ((NSArray?, NSError?) -> Void)) {
-//        
 //        let query: PFQuery! = User.query()
 //        query.whereKey("userID", notEqualTo: User.currentUser()!.userID!)
 //        
@@ -38,7 +38,7 @@ class UserManager {
 //            completion(contacts, error)
 //        }
 //    }
-//    
+//
 //    func queryForAllUsersWithCompletion(completion: ((NSArray?, NSError?) -> Void)?) {
 //        let query: PFQuery! = User.query()
 //        query.whereKey("userID", notEqualTo: User.currentUser()!.userID!)
@@ -51,32 +51,41 @@ class UserManager {
 //    
     
     func queryAndCacheUsersWithIDs(userIDs: [String], completion: ((NSArray?, NSError?) -> Void)?) {
-        for userId in userIDs {
-            let user = getUser(userId)
-            UserManager.sharedManager.cacheUserIfNeeded(user)
-        }
-        
-        if let callback = completion {
-            callback(objects, error)
-        }
+        getUsers(userIDs, completion: completion)
     }
     
-    func getUser(userId: String) -> User {
+    func getUsers(userIds: [String], completion: ((NSArray?, NSError?) -> Void)?) {
+        var users = [User]()
+        
         let apiEndPoint = "http://108.61.159.150/~socialmedia"
         let headers: [String: String] = [
             "Authorization": "Basic YWRtaW46TllUd2ViQDU1MTQ=",
             "Accept": "application/json"
         ]
         
-        Alamofire.request(.GET, "\(apiEndPoint)/wp-json/cqg/v1/user_info", parameters: ["id": userId], headers: headers)
+        let params = [
+            "action": "getUsers",
+            "users": userIds
+        ]
+        
+        Alamofire.request(.POST, "\(apiEndPoint)/wp-content/plugins/cqg-chat/authorize.php", parameters: params as! [String : AnyObject], headers: headers)
             .responseJSON { response in
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
-                print(response.result)   // result of response serialization
-                
-                if let JSON = response.result.value {
-                    print("JSON: \(JSON)")
+                if let value = response.result.value {
+                    let usersJson = JSON(value)
+                    
+                    for (_,usersJson2):(String, JSON) in usersJson {
+                        for (_,user):(String, JSON) in usersJson2 {
+                            let newUser = User(userID: user["id"].string!, firstName: user["name"].string!, lastName: user["name"].string!, avatarUrl: user["avatar"].string!)
+                            newUser.displayName = user["name"].string!
+                            UserManager.sharedManager.cacheUserIfNeeded(newUser)
+                            users.append(newUser)
+                            print("\(user)")
+                        }
+                    }
+                    
+                    if let callback = completion {
+                        callback(users, nil)
+                    }
                 }
         }
     }
