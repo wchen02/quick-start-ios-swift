@@ -9,11 +9,11 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
         // Uncomment the following line if you want to show avatars in 1:1 conversations
         self.shouldDisplayAvatarItemForOneOtherParticipant = true
         self.shouldDisplayAvatarItemForAuthenticatedUser = true
+        self.displaysAddressBar = false
         super.viewDidLoad()
 
         self.dataSource = self
         self.delegate = self
-        self.addressBarController.delegate = self
 
         // Setup the dateformatter used by the dataSource.
         self.dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
@@ -129,40 +129,6 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
             mergedStatuses.appendAttributedString(statusString)
         }
         return mergedStatuses;
-    }
-    
-    // MARK - ATLAddressBarViewController Delegate methods methods
-    
-    override func addressBarViewController(addressBarViewController: ATLAddressBarViewController, didTapAddContactsButton addContactsButton: UIButton) {
-//        UserManager.sharedManager.queryForAllUsersWithCompletion { (users: NSArray?, error: NSError?) in
-//            if error == nil {
-//                guard let pfusers = users as? [PFUser] else {
-//                    print("Users is empty")
-//                    return
-//                }
-//                
-//                let participants = NSSet(array: pfusers) as Set<NSObject>
-//                let controller = ParticipantTableViewController(participants: participants, sortType: ATLParticipantPickerSortType.FirstName)
-//                controller.delegate = self
-//                
-//                let navigationController = UINavigationController(rootViewController: controller)
-//                self.navigationController!.presentViewController(navigationController, animated: true, completion: nil)
-//            } else {
-//                print("Error querying for All Users: \(error)")
-//            }
-//        }
-    }
-    
-    override func addressBarViewController(addressBarViewController: ATLAddressBarViewController, searchForParticipantsMatchingText searchText: String, completion: (([AnyObject]) -> Void)?) {
-//        UserManager.sharedManager.queryForUserWithName(searchText) { (participants: NSArray?, error: NSError?) in
-//            if (error == nil) {
-//                if let callback = completion {
-//                    callback(participants! as [AnyObject])
-//                }
-//            } else {
-//                print("Error search for participants: \(error)")
-//            }
-//        }
     }
     
     // MARK - ATLParticipantTableViewController Delegate Methods
