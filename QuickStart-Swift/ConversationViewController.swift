@@ -6,13 +6,14 @@ class ConversationViewController: ATLConversationViewController, ATLConversation
     var usersArray: NSArray!
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        self.dataSource = self
-        self.delegate = self
-        self.addressBarController.delegate = self
         // Uncomment the following line if you want to show avatars in 1:1 conversations
         self.shouldDisplayAvatarItemForOneOtherParticipant = true
         self.shouldDisplayAvatarItemForAuthenticatedUser = true
+        super.viewDidLoad()
+
+        self.dataSource = self
+        self.delegate = self
+        self.addressBarController.delegate = self
 
         // Setup the dateformatter used by the dataSource.
         self.dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle

@@ -31,20 +31,16 @@ class ConversationListViewController: ATLConversationListViewController, ATLConv
         print("Failed to delete conversation with error: \(error)")
     }
     
-//    func conversationListViewController(conversationListViewController: ATLConversationListViewController, didSearchForText searchText: String, completion: ((Set<NSObject>!) -> Void)?) {
-//        UserManager.sharedManager.queryForUserWithName(searchText) { (participants: NSArray?, error: NSError?) in
-//            if error == nil {
-//                if let callback = completion {
-//                    callback(NSSet(array: participants as! [AnyObject]) as Set<NSObject>)
-//                }
-//            } else {
-//                if let callback = completion {
-//                    callback(nil)
-//                }
-//                print("Error searching for Users by name: \(error)")
-//            }
-//        }
-//    }
+    func conversationListViewController(conversationListViewController: ATLConversationListViewController, didSearchForText searchText: String, completion: (Set<NSObject>) -> Void) {
+        UserManager.sharedManager.queryForUserWithName(searchText) { (participants: NSArray?, error: NSError?) in
+            if error == nil {
+                completion(NSSet(array: participants as! [AnyObject]) as Set<NSObject>)
+            } else {
+                //completion(nil)
+                print("Error searching for Users by name: \(error)")
+            }
+        }
+    }
     
     func conversationListViewController(conversationListViewController: ATLConversationListViewController!, avatarItemForConversation conversation: LYRConversation!) -> ATLAvatarItem! {
         guard let lastMessage = conversation.lastMessage else {

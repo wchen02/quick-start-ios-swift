@@ -6,49 +6,18 @@ import SwiftyJSON
 class UserManager {
     static let sharedManager = UserManager()
     var userCache: NSCache = NSCache()
-    
-    
-//    let cache = NSCache()
-//    let myObject: ExpensiveObjectClass
-//    
-//    if let cachedVersion = cache.objectForKey("CachedObject") as? ExpensiveObjectClass {
-//        // use the cached version
-//        myObject = cachedVersion
-//    } else {
-//    // create it from scratch then store in the cache
-//    myObject = ExpensiveObjectClass()
-//    cache.setObject(myObject, forKey: "CachedObject")
-//    }
-    
+    var users = [User]()
     
     // MARK Query Methods
-//    func queryForUserWithName(searchText: String, completion: ((NSArray?, NSError?) -> Void)) {
-//        let query: PFQuery! = User.query()
-//        query.whereKey("userID", notEqualTo: User.currentUser()!.userID!)
-//        
-//        query.findObjectsInBackgroundWithBlock { objects, error in
-//            var contacts = [User]()
-//            if (error == nil) {
-//                for user: User in (objects as! [User]) {
-//                    if user.displayName.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch) != nil {
-//                        contacts.append(user)
-//                    }
-//                }
-//            }
-//            completion(contacts, error)
-//        }
-//    }
-//
-//    func queryForAllUsersWithCompletion(completion: ((NSArray?, NSError?) -> Void)?) {
-//        let query: PFQuery! = User.query()
-//        query.whereKey("userID", notEqualTo: User.currentUser()!.userID!)
-//        query.findObjectsInBackgroundWithBlock { objects, error in
-//            if let callback = completion {
-//                callback(objects, error)
-//            }
-//        }
-//    }
-//    
+    func queryForUserWithName(searchText: String, completion: ((NSArray?, NSError?) -> Void)) {
+        var contacts = [User]()
+        for user in users {
+            if user.displayName.rangeOfString(searchText, options: NSStringCompareOptions.CaseInsensitiveSearch) != nil {
+                contacts.append(user)
+            }
+        }
+        completion(contacts, nil)
+    }
     
     func queryAndCacheUsersWithIDs(userIDs: [String], completion: ((NSArray?, NSError?) -> Void)?) {
         getUsers(userIDs, completion: completion)
@@ -99,6 +68,7 @@ class UserManager {
     
     func cacheUserIfNeeded(user: User) {
         if self.userCache.objectForKey(user.userID) == nil {
+            self.users.append(user)
             self.userCache.setObject(user, forKey: user.userID)
         }
     }
